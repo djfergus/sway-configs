@@ -31,6 +31,14 @@ set $menu wofi --show run
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
 # output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
 output * bg /usr/share/wallpapers/postmarketos.jpg fill
+
+output * scale 1.5
+
+# Brightness
+bindsym F6 exec "brightnessctl -n100 -e2 set 2%-"
+bindsym F7 exec "brightnessctl -e2 set +2%"
+
+
 #
 # Example configuration:
 #
@@ -52,8 +60,11 @@ output * bg /usr/share/wallpapers/postmarketos.jpg fill
 # your displays after another 300 seconds, and turn your screens back on when
 # resumed. It will also lock your screen before your computer goes to sleep.
 
-font pango:Inconsolata Nerd Font Mono 11
+font pango:JetBrainsMono Nerd Font 8
 
+# below does not work
+#seat seat0 xcursor_theme default 100
+#seat seat0 xcursor_theme Adwaita 100
 
 ### Input configuration
 #
@@ -67,12 +78,14 @@ font pango:Inconsolata Nerd Font Mono 11
        tap enabled
        natural_scroll enabled
        middle_emulation disabled
-   }
+       pointer_accel 0.3
+       scroll_factor 0.5
+}
 
 
    input type:keyboard {
-      repeat_delay 200
-      repeat_rate 100
+      repeat_delay 230
+      repeat_rate 80
    }
 
 #
@@ -101,6 +114,8 @@ font pango:Inconsolata Nerd Font Mono 11
 
     # Reload the configuration file
     bindsym $mod+Shift+c reload
+    
+    bindsym $mod+Shift+n exec "nmcli c down datamama-5g; nmcli c up datamama-5g"
 
     # Exit sway (logs you out of your Wayland session)
     bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
@@ -171,6 +186,7 @@ font pango:Inconsolata Nerd Font Mono 11
 
     # Make the current focus fullscreen
     bindsym $mod+f fullscreen
+    bindsym F4 fullscreen
 
     # Toggle the current focus between tiling and floating mode
     bindsym $mod+Shift+space floating toggle
@@ -214,6 +230,7 @@ mode "resize" {
     # Return to default mode
     bindsym Return mode "default"
     bindsym Escape mode "default"
+    bindsym $mod+r mode "default"
 }
 bindsym $mod+r mode "resize"
 
