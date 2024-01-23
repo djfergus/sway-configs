@@ -1,4 +1,6 @@
-https://bit.ly/dfconfig
+
+sudo apt install curl git tmux
+sudo snap install neovim
 
 curl -Lks https://bit.ly/dfconfig | /bin/bash
 
