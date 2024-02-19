@@ -30,7 +30,7 @@ set $menu wofi --show run
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
 # output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
-output * bg /usr/share/wallpapers/postmarketos.jpg fill
+#output * bg /usr/share/wallpapers/postmarketos.jpg fill
 
 output * scale 1.5
 
@@ -84,8 +84,8 @@ font pango:JetBrainsMono Nerd Font 8
 
 
    input type:keyboard {
-      repeat_delay 230
-      repeat_rate 80
+      repeat_delay 250
+      repeat_rate 70
    }
 
 #
