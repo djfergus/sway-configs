@@ -26,3 +26,7 @@ vim.keymap.set("i", "jj", "<Esc>", options)
 vim.keymap.set("i", "kk", "<Esc>", options)
 vim.keymap.set("i", "jk", "<Esc>", options)
 vim.keymap.set("i", "kj", "<Esc>", options)
+
+vim.keymap.set("n", "<Leader>s", ":let @a=@\" | let @\"=@+ | let @+=@a | reg \"+<CR>")
+vim.keymap.set("v", "<Leader>s", ":let @a=@\" | let @\"=@+ | let @+=@a | reg \"+<CR>")
+
