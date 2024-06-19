@@ -125,3 +125,6 @@ alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
 
 
+
+# Created by `pipx` on 2024-05-24 01:29:34
+export PATH="$PATH:/home/df/.local/bin"

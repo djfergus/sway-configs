@@ -26,18 +26,37 @@ set $term foot
 #set $menu dmenu_path | dmenu | xargs swaymsg exec --
 set $menu wofi --show run
 
+exec swaymsg input "0:0:Elan_Touchscreen" map_to_output eDP-1
+exec /usr/bin/watch_tablet
+
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
 # output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
 #output * bg /usr/share/wallpapers/postmarketos.jpg fill
 
-output * scale 1.5
+
+# current screen resolution (width)
+# "$(swaymsg -t get_outputs --raw |jq .[].rect.width)"
+
+output * scale 1
 
 # Brightness
 bindsym F6 exec "brightnessctl -n100 -e2 set 2%-"
 bindsym F7 exec "brightnessctl -e2 set +2%"
 
+bindsym F8 exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym F10 exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym F9 exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+
+bindgesture swipe:up workspace prev
+bindgesture swipe:down workspace next
+
+bindgesture swipe:left exec swaymsg seat seat0 cursor press BTN_EXTRA, seat seat0 cursor release BTN_EXTRA
+
+bindgesture swipe:right exec swaymsg seat seat0 cursor press BTN_SIDE, seat seat0 cursor release BTN_SIDE
 
 #
 # Example configuration:
@@ -60,7 +79,8 @@ bindsym F7 exec "brightnessctl -e2 set +2%"
 # your displays after another 300 seconds, and turn your screens back on when
 # resumed. It will also lock your screen before your computer goes to sleep.
 
-font pango:JetBrainsMono Nerd Font 8
+#font pango:JetBrainsMono Nerd Font 8
+font pango:Terminus 8
 
 # below does not work
 #seat seat0 xcursor_theme default 100
@@ -119,6 +139,10 @@ font pango:JetBrainsMono Nerd Font 8
 
     # Exit sway (logs you out of your Wayland session)
     bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+
+
+    
+
 #
 # Moving around:
 #
@@ -183,7 +207,7 @@ font pango:JetBrainsMono Nerd Font 8
     # $mod+b or $mod+v, for horizontal and vertical splits
     # respectively.
     bindsym $mod+b splith
-    bindsym $mod+v splitv
+    #bindsym $mod+v splitv
 
     # Switch the current container between different layout styles
     bindsym $mod+s layout stacking
@@ -239,6 +263,15 @@ mode "resize" {
     bindsym $mod+r mode "default"
 }
 bindsym $mod+r mode "resize"
+
+mode "vim-arrows" {
+
+    # Return to default mode
+    #bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+v mode "default"
+}
+bindsym $mod+v mode "vim-arrows"
 
 #
 # Status Bar:
