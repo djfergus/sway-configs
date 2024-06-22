@@ -1,3 +1,6 @@
+# yay -S detect-tablet-mode-git
+
+
 input_device:  /dev/input/by-path/platform-ff200000.spi-cs-0-platform-ff200000.spi:ec@0:keyboard-controller-event
 # input_device: /dev/input/by-path/pci-0000:00:1f.0-platform-VPC2004:00-event # Lenovo IdeaPad Flex 5i Gen 7
 # input_device: /dev/input/by-path/pci-0000:00:1f.0-platform-INT33D6:00-event # Dell XPS 9365
