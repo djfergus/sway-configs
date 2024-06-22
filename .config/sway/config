@@ -80,7 +80,8 @@ bindgesture swipe:right exec swaymsg seat seat0 cursor press BTN_SIDE, seat seat
 # resumed. It will also lock your screen before your computer goes to sleep.
 
 #font pango:JetBrainsMono Nerd Font 8
-font pango:Terminus 8
+font pango:Hack Nerd Font 12
+#font pango:Terminus 8
 
 # below does not work
 #seat seat0 xcursor_theme default 100
@@ -207,7 +208,7 @@ font pango:Terminus 8
     # $mod+b or $mod+v, for horizontal and vertical splits
     # respectively.
     bindsym $mod+b splith
-    #bindsym $mod+v splitv
+    bindsym $mod+v splitv
 
     # Switch the current container between different layout styles
     bindsym $mod+s layout stacking
@@ -271,7 +272,7 @@ mode "vim-arrows" {
     bindsym Escape mode "default"
     bindsym $mod+v mode "default"
 }
-bindsym $mod+v mode "vim-arrows"
+#bindsym $mod+v mode "vim-arrows"
 
 #
 # Status Bar:
