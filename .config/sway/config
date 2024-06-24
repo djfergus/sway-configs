@@ -24,7 +24,10 @@ set $term foot
 # Note: pass the final command to swaymsg so that the resulting window can be opened
 # on the original workspace that the command was run on.
 #set $menu dmenu_path | dmenu | xargs swaymsg exec --
-set $menu wofi --show run
+set $menu wofi --show run 
+
+
+
 
 exec swaymsg input "0:0:Elan_Touchscreen" map_to_output eDP-1
 exec /usr/bin/watch_tablet
@@ -41,10 +44,13 @@ exec /usr/bin/watch_tablet
 
 output * scale 1
 
-# Brightness
-bindsym F6 exec "brightnessctl -n100 -e2 set 2%-"
-bindsym F7 exec "brightnessctl -e2 set +2%"
 
+
+# Brightness
+bindsym F6 exec brightnessctl -n100 -e2 set 2%- 
+bindsym F7 exec brightnessctl -e2 set +2%
+
+# Volume
 bindsym F8 exec pactl set-sink-mute @DEFAULT_SINK@ toggle
 bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
 bindsym F10 exec pactl set-sink-volume @DEFAULT_SINK@ +5%
@@ -78,6 +84,16 @@ bindgesture swipe:right exec swaymsg seat seat0 cursor press BTN_SIDE, seat seat
 # This will lock your screen after 300 seconds of inactivity, then turn off
 # your displays after another 300 seconds, and turn your screens back on when
 # resumed. It will also lock your screen before your computer goes to sleep.
+
+exec_always swayidle -w \
+         timeout 300 'swaylock -f --image ~/Downloads/unsplash1.jpg' \
+         timeout 450 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' \
+         before-sleep 'playerctl pause' \
+         before-sleep 'swaylock -f --image ~/Downloads/unsplash1.jpg' \
+         idlehint 780
+
+
+
 
 #font pango:JetBrainsMono Nerd Font 8
 font pango:Hack Nerd Font 12
@@ -278,9 +294,9 @@ mode "vim-arrows" {
 # Status Bar:
 #
 # Read `man 5 sway-bar` for more information about this section.
-bar {
+#bar {
 
-	swaybar_command waybar
+#	swaybar_command waybar
 
 #    position top
 
@@ -293,6 +309,48 @@ bar {
   #      background #323232
   #      inactive_workspace #32323200 #32323200 #5c5c5c
   #  }
+#}
+
+# Faster thunar
+exec thunar --daemon
+
+
+bar {
+    status_command    eval $(gpg --decrypt $HOME/.config/keys.sh.gpg) && i3status-rs ~/.config/i3rust/i3_top.toml
+    position          top
+    workspace_buttons yes
+    tray_output       eDP-1
+    font pango:DejaVu Sans Mono, FontAwesome 12
+
+    colors {
+        separator #666666
+        background #222222
+        statusline #dddddd
+        focused_workspace #0088CC #0088CC #ffffff
+        active_workspace #333333 #333333 #ffffff
+        inactive_workspace #333333 #333333 #888888
+        urgent_workspace #2f343a #900000 #ffffff
+    }
 }
+
+
+bar {
+    status_command   eval $(gpg --decrypt $HOME/.config/keys.sh.gpg) && i3status-rs ~/.config/i3rust/i3_bottom.toml
+    position          bottom
+    workspace_buttons no
+    tray_output none
+    font pango:DejaVu Sans Mono, FontAwesome 12
+
+    colors {
+        separator #666666
+        background #222222
+        statusline #dddddd
+        focused_workspace #0088CC #0088CC #ffffff
+        active_workspace #333333 #333333 #ffffff
+        inactive_workspace #333333 #333333 #888888
+        urgent_workspace #2f343a #900000 #ffffff
+    }
+}
+
 
 include /etc/sway/config.d/*
