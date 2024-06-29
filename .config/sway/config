@@ -8,6 +8,9 @@
 #
 # Logo key. Use Mod1 for Alt.
 set $mod Mod4
+
+
+
 # In postmarketOS, the package postmarketos-ui-sway-logo-key-alt can be
 # installed to override the logo key with Alt in the following config. This is
 # used by QEMU devices for easier testing.
@@ -28,13 +31,22 @@ exec '[ -x "$(command -v foot)" ] && systemctl --now --user enable foot-server.s
 
 set $term footclient
 #set $term_cwd $term -D "$(swaycwd 2>/dev/null || echo $HOME)"
-set $term_float footclient --app-id floating_shell --window-size-chars 82x25
+set $term_float footclient --app-id floating_shell --window-size-chars 120x40
+
+# floating shell apps
+for_window [app_id="floating_shell"] floating enable, border pixel 1, sticky enable
 
 # allow to kill focused floating shell windows using Esc
 bindsym --release Escape [app_id="floating_shell" con_id=__focused__] kill
 
+# once-script
+# https://raw.githubusercontent.com/manjaro-sway/desktop-settings/sway/community/sway/usr/share/sway/scripts/once.sh
+set $once /usr/share/sway/scripts/once.sh
+
+
 # Your preferred task manager
 set $task_manager $once $term_float btop
+bindsym $mod+Escape exec $task_manager
 
 # bluetooth menu
 set $bluetooth $once $term_float bluetuith
@@ -47,7 +59,7 @@ set $help /usr/share/sway/scripts/help.sh --toggle
 
 # calendar application
 set $calendar $once $term_float calcurse
-
+exec 'calcurse --daemon'
 
 # Your preferred application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be opened
@@ -156,6 +168,8 @@ font pango:Hack Nerd Font 12
    input type:keyboard {
       repeat_delay 250
       repeat_rate 70
+      xkb_options caps:super 
+
    }
 
 #

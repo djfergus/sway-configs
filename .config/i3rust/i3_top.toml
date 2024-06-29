@@ -56,4 +56,3 @@ full = " $icon $timestamp.datetime(f:'%a %d %b %R') "
 #full = " $icon $timestamp.datetime(f:'%a %R') "
 # full = " $icon $timestamp.datetime(f:'%a %R %Z') "
 #short = " $icon $timestamp.datetime(f:%R) "
-
