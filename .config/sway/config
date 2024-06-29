@@ -19,7 +19,36 @@ set $down j
 set $up k
 set $right l
 # Your preferred terminal emulator (pma#984: set to foot)
-set $term foot
+#set $term foot
+
+
+# Your preferred terminal emulator
+
+exec '[ -x "$(command -v foot)" ] && systemctl --now --user enable foot-server.socket && systemctl --now --user enable foot-server'
+
+set $term footclient
+#set $term_cwd $term -D "$(swaycwd 2>/dev/null || echo $HOME)"
+set $term_float footclient --app-id floating_shell --window-size-chars 82x25
+
+# allow to kill focused floating shell windows using Esc
+bindsym --release Escape [app_id="floating_shell" con_id=__focused__] kill
+
+# Your preferred task manager
+set $task_manager $once $term_float btop
+
+# bluetooth menu
+set $bluetooth $once $term_float bluetuith
+
+# hide cursor after 5 seconds of inactivty
+seat seat0 hide_cursor 5000
+
+# help command
+set $help /usr/share/sway/scripts/help.sh --toggle
+
+# calendar application
+set $calendar $once $term_float calcurse
+
+
 # Your preferred application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be opened
 # on the original workspace that the command was run on.
@@ -27,10 +56,11 @@ set $term foot
 set $menu wofi --show run 
 
 
-
+for_window [title="Bitwarden"] floating enable, border pixel 1, sticky enable
 
 exec swaymsg input "0:0:Elan_Touchscreen" map_to_output eDP-1
 exec /usr/bin/watch_tablet
+exec autotiling
 
 ### Output configuration
 #
@@ -86,13 +116,15 @@ bindgesture swipe:right exec swaymsg seat seat0 cursor press BTN_SIDE, seat seat
 # resumed. It will also lock your screen before your computer goes to sleep.
 
 exec_always swayidle -w \
-         timeout 300 'swaylock -f --image ~/Downloads/unsplash1.jpg' \
+         timeout 300 'swaylock --show-failed-attempts --fade-in 0.2 -e --grace 2 -S -f --clock --effect-vignette 0.5:0.5 --effect-blur 7x5' \
          timeout 450 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' \
          before-sleep 'playerctl pause' \
-         before-sleep 'swaylock -f --image ~/Downloads/unsplash1.jpg' \
+         before-sleep 'swaylock --show-failed-attempts -e -S -f --clock --effect-vignette 0.5:0.5 --effect-blur 7x5' \
          idlehint 780
 
 
+#  timeout 300 'swaylock -f --image ~/Downloads/unsplash1.jpg' \
+# timeout 300 'swaylock  -e --grace 5 -S -f --clock --effect-blur 20x2' \
 
 
 #font pango:JetBrainsMono Nerd Font 8
@@ -111,12 +143,13 @@ font pango:Hack Nerd Font 12
 #   input "1267:102:Elan_TouchPad" {
 #   input * {
    input type:touchpad {
-       dwt enabled
+       dwt enabled # disable while typing
        tap enabled
        natural_scroll enabled
        middle_emulation disabled
        pointer_accel 0.3
        scroll_factor 0.5
+       click_method clickfinger #don't use right bottom for right click
 }
 
 
@@ -152,12 +185,38 @@ font pango:Hack Nerd Font 12
     # Reload the configuration file
     bindsym $mod+Shift+c reload
     
-    bindsym $mod+Shift+n exec "nmcli c down datamama-5g; nmcli c up datamama-5g"
+#    bindsym $mod+Shift+n exec "nmcli c down datamama-5g; nmcli c up datamama-5g"
 
     # Exit sway (logs you out of your Wayland session)
-    bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+#    bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
 
 
+set $mode_shutdown " l=lock e=logout r=reboot u=suspend s=shutdown"
+
+set $purge_cliphist [ $purge_cliphist_logout == 'true' ] && rm -f $HOME/.cache/cliphist/db || exit 0
+
+mode --pango_markup $mode_shutdown {
+    # lock
+    bindsym l mode "default", exec 'swaylock --show-failed-attempts -e -S --clock --effect-vignette 0.5:0.5 --effect-blur 7x5' 
+
+    # logout
+    bindsym e exec $purge_cliphist; exec swaymsg exit
+
+    # suspend
+    bindsym u mode "default", exec systemctl suspend
+
+    # shutdown
+    bindsym s exec $purge_cliphist; exec systemctl poweroff
+
+    # reboot
+    bindsym r exec $purge_cliphist; exec systemctl reboot
+
+    # Return to default mode.
+    bindsym Escape mode "default"
+}
+
+## Launch // Exit Menu ##
+bindsym $mod+Shift+e mode $mode_shutdown
     
 
 #
@@ -199,22 +258,38 @@ font pango:Hack Nerd Font 12
     bindsym $mod+9 workspace number 9
     bindsym $mod+0 workspace number 10
 
-    bindsym $mod+Tab workspace next_on_output
+  #  bindsym $mod+Tab workspace next_on_output
+    bindsym $mod+Tab workspace back_and_forth
     bindsym $mod+Shift+Tab workspace prev_on_output
     bindsym Mod1+Tab focus next
     bindsym Mod1+Shift+Tab focus prev
 
+# https://raw.githubusercontent.com/manjaro-sway/desktop-settings/sway/community/sway/usr/share/sway/scripts/first-empty-workspace.py
+
+## Launch // Open launcher in a new workspace ##
+    bindsym $mod+Shift+d exec /usr/share/sway/scripts/first-empty-workspace.py --switch, exec $menu
+
+## Navigation // Switch to a new workspace ##
+    bindsym $mod+n exec /usr/share/sway/scripts/first-empty-workspace.py --switch
+
+## Action // Move focused window to a new workspace ##
+    bindsym $mod+Shift+n exec /usr/share/sway/scripts/first-empty-workspace.py --move
+
+## Action // Move focused window to a new workspace and switch there ##
+    bindsym $mod+Shift+m exec /usr/share/sway/scripts/first-empty-workspace.py --move --switch
+
+
  # Move focused container to workspace
-    bindsym $mod+Shift+1 move container to workspace number 1
-    bindsym $mod+Shift+2 move container to workspace number 2
-    bindsym $mod+Shift+3 move container to workspace number 3
-    bindsym $mod+Shift+4 move container to workspace number 4
-    bindsym $mod+Shift+5 move container to workspace number 5
-    bindsym $mod+Shift+6 move container to workspace number 6
-    bindsym $mod+Shift+7 move container to workspace number 7
-    bindsym $mod+Shift+8 move container to workspace number 8
-    bindsym $mod+Shift+9 move container to workspace number 9
-    bindsym $mod+Shift+0 move container to workspace number 10
+    bindsym $mod+Shift+1 move container to workspace number 1, exec swaymsg workspace 1
+    bindsym $mod+Shift+2 move container to workspace number 2, exec swaymsg workspace 2
+    bindsym $mod+Shift+3 move container to workspace number 3, exec swaymsg workspace 3
+    bindsym $mod+Shift+4 move container to workspace number 4, exec swaymsg workspace 4
+    bindsym $mod+Shift+5 move container to workspace number 5, exec swaymsg workspace 5
+    bindsym $mod+Shift+6 move container to workspace number 6, exec swaymsg workspace 6
+    bindsym $mod+Shift+7 move container to workspace number 7, exec swaymsg workspace 7
+    bindsym $mod+Shift+8 move container to workspace number 8, exec swaymsg workspace 8
+    bindsym $mod+Shift+9 move container to workspace number 9, exec swaymsg workspace 9
+    bindsym $mod+Shift+0 move container to workspace number 10, exec swaymsg workspace 10
     # Note: workspaces can have any name you want, not just numbers.
     # We just use 1-10 as the default.
 #
@@ -250,7 +325,10 @@ font pango:Hack Nerd Font 12
     # You can send windows there and get them back later.
 
     # Move the currently focused window to the scratchpad
-    bindsym $mod+Shift+minus move scratchpad
+#    bindsym $mod+Shift+minus move scratchpad
+    bindsym $mod+Shift+minus floating enable, resize set width 1366 height 675, move scratchpad
+
+
 
     # Show the next scratchpad window or hide the focused scratchpad window.
     # If there are multiple scratchpad windows, this command cycles through them.
@@ -320,7 +398,8 @@ bar {
     position          top
     workspace_buttons yes
     tray_output       eDP-1
-    font pango:DejaVu Sans Mono, FontAwesome 12
+    #font pango:DejaVu Sans Mono, FontAwesome 12
+    font pango:Hack Nerd Font, FontAwesome 12
 
     colors {
         separator #666666
@@ -339,7 +418,8 @@ bar {
     position          bottom
     workspace_buttons no
     tray_output none
-    font pango:DejaVu Sans Mono, FontAwesome 12
+    #font pango:DejaVu Sans Mono, FontAwesome 12
+    font pango:Hack Nerd Font, FontAwesome 12
 
     colors {
         separator #666666
@@ -351,6 +431,15 @@ bar {
         urgent_workspace #2f343a #900000 #ffffff
     }
 }
+
+
+
+# start brave on workspace 2
+workspace 2
+exec /usr/bin/brave&
+workspace 1
+
+
 
 
 include /etc/sway/config.d/*

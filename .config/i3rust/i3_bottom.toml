@@ -34,32 +34,8 @@ icons = "awesome5"
 
 [[block]]
 block = "time"
-format = "SF:$timestamp.datetime(f:'%R') "
-timezone = "America/Los_Angeles"
-interval = 60
-
-[[block]]
-block = "time"
-format = "NY:$timestamp.datetime(f:'%R') "
-timezone = "America/New_York"
-interval = 60
-
-[[block]]
-block = "time"
-format = "UK:$timestamp.datetime(f:'%R') "
-timezone = "GB"
-interval = 60
-
-[[block]]
-block = "time"
-format = "EU:$timestamp.datetime(f:'%R') "
-timezone = "Europe/Stockholm"
-interval = 60
-
-[[block]]
-block = "time"
-format = "KL:$timestamp.datetime(f:'%R') "
-timezone = "Asia/Singapore"
+format = "SYD:$timestamp.datetime(f:'%R') "
+timezone = "Australia/Sydney"
 interval = 60
 
 [[block]]
@@ -70,9 +46,36 @@ interval = 60
 
 [[block]]
 block = "time"
-format = "SYD:$timestamp.datetime(f:'%R') "
-timezone = "Australia/Sydney"
+format = "KL:$timestamp.datetime(f:'%R') "
+timezone = "Asia/Singapore"
 interval = 60
+
+[[block]]
+block = "time"
+format = "EU:$timestamp.datetime(f:'%R') "
+timezone = "Europe/Stockholm"
+interval = 60
+
+[[block]]
+block = "time"
+format = "UK:$timestamp.datetime(f:'%R') "
+timezone = "GB"
+interval = 60
+
+[[block]]
+block = "time"
+format = "NY:$timestamp.datetime(f:'%R') "
+timezone = "America/New_York"
+interval = 60
+
+
+[[block]]
+block = "time"
+format = "SF:$timestamp.datetime(f:'%R') "
+timezone = "America/Los_Angeles"
+interval = 60
+
+
 
 [[block]]
 block = "battery"
