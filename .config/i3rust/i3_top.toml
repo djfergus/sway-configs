@@ -14,8 +14,8 @@ path = "/"
 info_type = "available"
 alert_unit = "GB"
 interval = 20
-warning = 20.0
-alert = 10.0
+warning = 5.0
+alert = 2.0
 
 [[block]]
 block = "memory"
