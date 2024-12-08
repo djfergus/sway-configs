@@ -98,6 +98,19 @@ config.set('content.headers.user_agent', 'Mozilla/5.0 ({os_info}) AppleWebKit/{w
 # Type: FormatString
 config.set('content.headers.user_agent', 'Mozilla/5.0 ({os_info}; rv:131.0) Gecko/20100101 Firefox/131.0', 'https://accounts.google.com/*')
 
+# Which method of blocking ads should be used.  Support for Adblock Plus
+# (ABP) syntax blocklists using Brave's Rust library requires the
+# `adblock` Python package to be installed, which is an optional
+# dependency of qutebrowser. It is required when either `adblock` or
+# `both` are selected.
+# Type: String
+# Valid values:
+#   - auto: Use Brave's ABP-style adblocker if available, host blocking otherwise
+#   - adblock: Use Brave's ABP-style adblocker
+#   - hosts: Use hosts blocking
+#   - both: Use both hosts blocking and Brave's ABP-style adblocker
+c.content.blocking.method = 'both'
+
 # Load images automatically in web pages.
 # Type: Bool
 config.set('content.images', True, 'chrome-devtools://*')
@@ -130,11 +143,50 @@ config.set('content.local_content_can_access_remote_urls', True, 'file:///home/d
 # Type: Bool
 config.set('content.local_content_can_access_file_urls', False, 'file:///home/df/.local/share/qutebrowser/userscripts/*')
 
-# Default font families to use. Whenever "default_family" is used in a
-# font setting, it's replaced with the fonts listed here. If set to an
-# empty value, a system-specific monospace default is used.
-# Type: List of Font, or Font
-#c.fonts.default_family = 'Hack Nerd Font'
+# Allow websites to show notifications.
+# Type: BoolAsk
+# Valid values:
+#   - true
+#   - false
+#   - ask
+config.set('content.notifications.enabled', True, 'https://j.qwilio.com')
+
+# Height (in pixels or as percentage of the window) of the completion.
+# Type: PercOrInt
+c.completion.height = '20%'
+
+# When to show the autocompletion window.
+# Type: String
+# Valid values:
+#   - always: Whenever a completion is available.
+#   - auto: Whenever a completion is requested.
+#   - never: Never.
+c.completion.show = 'always'
+
+# Delay (in milliseconds) before updating completions after typing a
+# character.
+# Type: Int
+c.completion.delay = 500
+
+# Automatically enter insert mode if an editable element is focused
+# after loading the page.
+# Type: Bool
+c.input.insert_mode.auto_load = True
+
+# Enable smooth scrolling for web pages. Note smooth scrolling does not
+# work with the `:scroll-px` command.
+# Type: Bool
+c.scrolling.smooth = False
+
+# Render all web contents using a dark theme. On QtWebEngine < 6.7, this
+# setting requires a restart and does not support URL patterns, only the
+# global setting is applied. Example configurations from Chromium's
+# `chrome://flags`: - "With simple HSL/CIELAB/RGB-based inversion": Set
+# `colors.webpage.darkmode.algorithm` accordingly, and   set
+# `colors.webpage.darkmode.policy.images` to `never`.  - "With selective
+# image inversion": qutebrowser default settings.
+# Type: Bool
+c.colors.webpage.darkmode.enabled = True
 
 # Default font size to use. Whenever "default_size" is used in a font
 # setting, it's replaced with the size listed here. Valid values are
@@ -143,14 +195,5 @@ config.set('content.local_content_can_access_file_urls', False, 'file:///home/df
 # Type: String
 c.fonts.default_size = '12pt'
 
-# Font family for standard fonts.
-# Type: FontFamily
-#c.fonts.web.family.standard = 'Hack Nerd Font'
-
-# Font family for fixed fonts.
-# Type: FontFamily
-#c.fonts.web.family.fixed = 'Hack Nerd Font'
-
-# Font family for sans-serif fonts.
-# Type: FontFamily
-#c.fonts.web.family.sans_serif = 'Hack Nerd Font'
+# Bindings for normal mode
+config.bind('M', 'spawn mpv --ytdl-format="bestvideo[height<=?1080][vcodec!=?vp9]+bestaudio/best" {url}')
